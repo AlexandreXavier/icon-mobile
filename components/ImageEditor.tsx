@@ -42,6 +42,7 @@ export function ImageEditor({ imageUrl, originalFile, onImageEdited, onCancel }:
   });
   const [activeTab, setActiveTab] = useState<'crop' | 'rotate' | 'color' | 'resize' | 'exposure' | 'background'>('crop');
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const [aspectRatio, setAspectRatio] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     const img = new Image();
@@ -134,14 +135,8 @@ export function ImageEditor({ imageUrl, originalFile, onImageEdited, onCancel }:
     );
   }, [completedCrop]);
 
-  const setAspectRatio = (ratio: number | null) => {
-    setEdits(prev => ({
-      ...prev,
-      crop: {
-        ...prev.crop,
-        aspectRatio: ratio || undefined
-      }
-    }));
+  const handleAspectRatio = (ratio: number | undefined) => {
+    setAspectRatio(ratio);
   };
 
   const rotate = (angle: number) => {
@@ -257,7 +252,7 @@ export function ImageEditor({ imageUrl, originalFile, onImageEdited, onCancel }:
                 crop={edits.crop}
                 onChange={handleCropChange}
                 onComplete={handleCropComplete}
-                aspect={edits.crop.aspectRatio}
+                aspect={aspectRatio}
               >
                 <img
                   ref={imgRef}
@@ -314,25 +309,25 @@ export function ImageEditor({ imageUrl, originalFile, onImageEdited, onCancel }:
                     <label className="text-sm">Aspect Ratio</label>
                     <div className="grid grid-cols-2 gap-2">
                       <button
-                        onClick={() => setAspectRatio(null)}
+                        onClick={() => handleAspectRatio(undefined)}
                         className="px-2 py-1 text-xs bg-background border border-border rounded hover:bg-accent"
                       >
                         Free
                       </button>
                       <button
-                        onClick={() => setAspectRatio(1)}
+                        onClick={() => handleAspectRatio(1)}
                         className="px-2 py-1 text-xs bg-background border border-border rounded hover:bg-accent"
                       >
                         1:1
                       </button>
                       <button
-                        onClick={() => setAspectRatio(16/9)}
+                        onClick={() => handleAspectRatio(16/9)}
                         className="px-2 py-1 text-xs bg-background border border-border rounded hover:bg-accent"
                       >
                         16:9
                       </button>
                       <button
-                        onClick={() => setAspectRatio(4/3)}
+                        onClick={() => handleAspectRatio(4/3)}
                         className="px-2 py-1 text-xs bg-background border border-border rounded hover:bg-accent"
                       >
                         4:3
